@@ -10,7 +10,8 @@ let autoClickPrice = parseInt(autoClickPoints.innerHTML);
 const bonusButton = document.querySelector("#btn-bonus");
 const bonusPoints = document.querySelector("#bonus-points");
 let bonusPrice = parseInt(bonusPoints.innerHTML);
-let bonusTime = parseInt(document.querySelector("#bonus-time").innerHTML);
+let bonusTime = document.querySelector("#bonus-time");
+let bonusTimer = parseInt(bonusTime.innerHTML);
 
 let counter = 1;
 cookie.addEventListener("click", () => {
@@ -19,59 +20,73 @@ cookie.addEventListener("click", () => {
     console.log(score);
 })
 
-multiplierButton.addEventListener("click", () => {
-    if (score >= multiplierPrice) {
-        score -= multiplierPrice;
-        cookieScore.innerHTML = score;
-        counter *= 5;
-        multiplierPrice += 100;
-        multiplierPoints.innerHTML = multiplierPrice + " Points";
-        console.log(multiplierPrice);
-    } else {
-        alert("You don't have enough points to buy this item");
-    }
-})
 
-autoClickButton.addEventListener("click", () => {
-    if (score >= autoClickPrice) {
-        score -= autoClickPrice;
-        autoClickPrice *= 2;
-        autoClickPoints.innerHTML = autoClickPrice + " Points";
-        cookieScore.innerHTML = score;
-        setInterval(() => {
-            score += counter;
+//multiplier button
+if (score < multiplierPrice) {
+    multiplierButton.disabled = true;
+} else {
+    multiplierButton.disabled = false;
+    multiplierButton.addEventListener("click", () => {
+        if (score >= multiplierPrice) {
+            score -= multiplierPrice;
             cookieScore.innerHTML = score;
+            counter *= 2;
+            multiplierPrice *= 5;
+            multiplierPoints.innerHTML = multiplierPrice + " Points";
+        }
+    })
+}
 
-        }, 5000)
-    } else {
-        alert("You don't have enough points to buy this item");
-    }
-})
+
+//autoclick after 1 second
+if (score < autoClickPrice) {
+    autoClickButton.disabled = true;
+} else {
+    autoClickButton.disabled = false;
+    autoClickButton.addEventListener("click", () => {
+        if (score >= autoClickPrice) {
+            score -= autoClickPrice;
+            autoClickPrice *= 2;
+            autoClickPoints.innerHTML = autoClickPrice + " Points";
+            cookieScore.innerHTML = score;
+            setInterval(() => {
+                score += 1;
+                cookieScore.innerHTML = score;
+                console.log(score);
+            }, 1000)
+
+        }
+    })
+}
 
 
-bonusButton.addEventListener("click", () => {
-    if (score >= bonusPrice) {
-        score -= bonusPrice;
-        cookieScore.innerHTML = score;
-        bonusPrice *= 2;
-        bonusPoints.innerHTML = bonusPrice + " Points";
-        counter += 200;
-        counter = score;
-        let bonusCounter = setInterval(timer, 1000);
+//200% bonus button
+if (score < bonusPrice) {
+    bonusButton.disabled = true;
+} else {
+    bonusButton.disabled = false;
+    bonusButton.addEventListener("click", () => {
+        if (score >= bonusPrice) {
+            score -= bonusPrice;
+            cookieScore.innerHTML = score;
+            bonusPrice *= 2;
+            bonusPoints.innerHTML = bonusPrice + " Points";
+            counter *= 2;
+            console.log(counter)
+            let bonusCounter = setInterval(timer, 1000);
+            console.log(bonusCounter);
 
-        function timer() {
-            if (bonusTime <= bonusTime) {
-                bonusTime -= 1;
-                document.querySelector("#bonus-time").innerHTML = bonusTime;
-                counter += 200;
-                cookieScore.innerHTML = counter;
-                if (bonusTime === 0) {
+            function timer() {
+                if (bonusTimer > 0) {
+                    bonusTimer -= 1;
+                    bonusTime.innerHTML = bonusTimer;
+                } else {
                     clearInterval(bonusCounter);
-                    document.querySelector("#bonus-time").innerHTML = "30";
+                    bonusTimer = "30";
+                    bonusTime.innerHTML = bonusTimer;
+                    counter /= 2;
                 }
             }
         }
-    } else {
-        alert("You don't have enough points to buy this item");
-    }
-})
+    })
+}
