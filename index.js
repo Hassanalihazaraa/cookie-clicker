@@ -24,7 +24,7 @@ cookie.addEventListener("click", () => {
 //multiplier button
 if (score < multiplierPrice) {
     multiplierButton.disabled = true;
-} else {
+} else if (score >= multiplierPrice) {
     multiplierButton.disabled = false;
     multiplierButton.addEventListener("click", () => {
         if (score >= multiplierPrice) {
